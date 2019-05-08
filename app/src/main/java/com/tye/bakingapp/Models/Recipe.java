@@ -3,6 +3,8 @@ package com.tye.bakingapp.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +14,16 @@ public class Recipe implements Parcelable {
     private String name;
     private List<Ingredient> ingredients;
     private List<Step> steps;
+    private int servings;
+    private String image;
 
-    public Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps) {
+    public Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps, int servings, String image) {
         this.id = id;
         this.name = name;
         this.ingredients = ingredients;
         this.steps = steps;
+        this.servings = servings;
+        this.image = image;
     }
 
     private Recipe(Parcel in){
@@ -27,8 +33,21 @@ public class Recipe implements Parcelable {
         in.readList(steps, Step.class.getClassLoader());
         id = in.readInt();
         name = in.readString();
+        servings = in.readInt();
+        image = in.readString();
     }
 
+    public String serialize() {
+        // Serialize this class into a JSON string using GSON
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    static public Recipe create(String serializedData) {
+        // Use GSON to instantiate this class using the JSON representation of the state
+        Gson gson = new Gson();
+        return gson.fromJson(serializedData, Recipe.class);
+    }
 
     public String getName() {
         return name;
@@ -53,6 +72,8 @@ public class Recipe implements Parcelable {
         parcel.writeList(steps);
         parcel.writeInt(id);
         parcel.writeString(name);
+        parcel.writeInt(servings);
+        parcel.writeString(image);
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {

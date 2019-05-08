@@ -78,7 +78,7 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(mContext, "Position: " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "Position: " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             mListItemClickListener.onListItemClicked(getAdapterPosition());
         }
 

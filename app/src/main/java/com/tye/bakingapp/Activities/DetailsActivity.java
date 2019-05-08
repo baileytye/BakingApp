@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.tye.bakingapp.Fragments.RecipeFragment;
 import com.tye.bakingapp.Models.Recipe;
@@ -27,6 +28,7 @@ public class DetailsActivity extends AppCompatActivity implements RecipeFragment
         Intent intent = getIntent();
         if(intent != null) {
             if (intent.hasExtra(EXTRA_RECIPE)) {
+                Log.i("DETAILS ACTIVITY", "Recieved recipe");
                 mRecipe = intent.getParcelableExtra(EXTRA_RECIPE);
             }
         }

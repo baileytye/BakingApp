@@ -32,6 +32,10 @@ import com.tye.bakingapp.R;
 
 import java.util.Objects;
 
+import butterknife.BindAnim;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,10 +49,11 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     private Step mStep;
 
-    private PlayerView playerView;
+
     private SimpleExoPlayer simpleExoPlayer;
 
-    private TextView textView;
+    @BindView(R.id.exo_player_view)  PlayerView playerView;
+    @BindView(R.id.tv_step_instruction) TextView mStepInstructionTextView;
 
     public StepDetailsFragment() {
         // Required empty public constructor
@@ -60,7 +65,6 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
      *
      * @return A new instance of fragment StepDetailsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static StepDetailsFragment newInstance(Step step) {
         StepDetailsFragment fragment = new StepDetailsFragment();
         Bundle args = new Bundle();
@@ -83,8 +87,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
         View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
 
-        textView = rootView.findViewById(R.id.textView);
-        playerView = rootView.findViewById(R.id.exo_player_view);
+        ButterKnife.bind(this, rootView);
 
         if(savedInstanceState == null){
             Intent intent = Objects.requireNonNull(getActivity()).getIntent();
@@ -102,25 +105,31 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         }
 
         if (mStep != null) {
-            textView.setText(mStep.getDescription());
+            mStepInstructionTextView.setText(mStep.getDescription());
         }
 
-        initializePlayer();
-
+        if(simpleExoPlayer == null) {
+            initializePlayer();
+            prepareVideo();
+        }
         // Inflate the layout for this fragment
         return rootView;
     }
 
     private void initializePlayer() {
+
+        TrackSelector trackSelector = new DefaultTrackSelector();
+        LoadControl loadControl = new DefaultLoadControl();
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector,loadControl);
+        playerView.setPlayer(simpleExoPlayer);
+        simpleExoPlayer.addListener(this);
+
+    }
+
+    private void prepareVideo(){
+
         if(mStep.getVideoURL().equals("")) return;
 
-        if(simpleExoPlayer == null){
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector,loadControl);
-            playerView.setPlayer(simpleExoPlayer);
-            simpleExoPlayer.addListener(this);
-        }
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
                 Util.getUserAgent(getContext(), "BakingApp"));
 
@@ -131,4 +140,54 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         simpleExoPlayer.prepare(videoSource);
     }
 
+    private void releasePlayer(){
+        simpleExoPlayer.stop();
+        simpleExoPlayer.release();
+        simpleExoPlayer = null;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if(simpleExoPlayer == null) {
+            initializePlayer();
+            prepareVideo();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(simpleExoPlayer == null) {
+            initializePlayer();
+            prepareVideo();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if(simpleExoPlayer != null) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (simpleExoPlayer != null) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (simpleExoPlayer != null) {
+            releasePlayer();
+        }
+    }
 }
