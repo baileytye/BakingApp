@@ -1,8 +1,12 @@
 package com.tye.bakingapp.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Parcelable {
 
     private int id;
     private String name;
@@ -16,34 +20,53 @@ public class Recipe {
         this.steps = steps;
     }
 
-    private class Ingredient{
-
-        private String ingredient;
-        private float quantity;
-        private String measure;
-
-        public Ingredient(String ingredient, float quantity, String measure) {
-            this.ingredient = ingredient;
-            this.quantity = quantity;
-            this.measure = measure;
-        }
+    private Recipe(Parcel in){
+        ingredients = new ArrayList<Ingredient>();
+        in.readList(ingredients, Ingredient.class.getClassLoader());
+        steps = new ArrayList<Step>();
+        in.readList(steps, Step.class.getClassLoader());
+        id = in.readInt();
+        name = in.readString();
     }
 
-    private class Step{
 
-        private int id;
-        private String shortDescription;
-        private String description;
-        private String videoURL;
-        private String thumbnailURL;
-
-        public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
-            this.id = id;
-            this.shortDescription = shortDescription;
-            this.description = description;
-            this.videoURL = videoURL;
-            this.thumbnailURL = thumbnailURL;
-        }
+    public String getName() {
+        return name;
     }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeList(ingredients);
+        parcel.writeList(steps);
+        parcel.writeInt(id);
+        parcel.writeString(name);
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+
 
 }

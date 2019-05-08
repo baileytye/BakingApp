@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecipeProvider {
 
     public interface ReceiveRecipeCallback{
-        public void onDone(List<Recipe> recipes);
+        void onDone(List<Recipe> recipes);
     }
 
     private ReceiveRecipeCallback callback;
@@ -53,7 +53,7 @@ public class RecipeProvider {
                 if (response.body() != null) {
                     callback.onDone(response.body());
                 } else {
-                    Log.e("Movie List Error", "Movie list is null");
+                    Log.e("Recipe List Error", "Movie list is null");
                 }
             }
 

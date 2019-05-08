@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,12 +39,11 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mRecipeProvider = new RecipeProvider(this);
-        mRecipeProvider.retrieveRecipeList();
 
         mRecipeAdapter = new MainRecipeListAdapter(this, this);
 
-        mRecipeAdapter.setNumberOfItems(18);
+        mRecipeProvider = new RecipeProvider(this);
+        mRecipeProvider.retrieveRecipeList();
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -53,17 +53,17 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
     @Override
     public void onListItemClicked(int position) {
 
-        //Start details activity
-
-    }
-
-    private void retrieveRecipeList(){
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra(DetailsActivity.EXTRA_RECIPE, mRecipes.get(position));
+        startActivity(intent);
 
     }
 
     @Override
     public void onDone(List<Recipe> recipes) {
         mRecipes = recipes;
+        mRecipeAdapter.setRecipes(mRecipes);
+        mRecipeAdapter.notifyDataSetChanged();
         Log.i("ON_CREATE", "Number of recipes: " + mRecipes.size());
     }
 }

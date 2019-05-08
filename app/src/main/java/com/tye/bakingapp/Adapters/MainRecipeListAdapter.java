@@ -46,7 +46,7 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        holder.bind();
+        if(mRecipes != null) holder.bind(mRecipes.get(position));
     }
 
     @Override
@@ -60,6 +60,7 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
 
     public void setRecipes(List<Recipe> recipes){
         mRecipes = recipes;
+        setNumberOfItems(recipes.size());
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -78,10 +79,11 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
         @Override
         public void onClick(View view) {
             Toast.makeText(mContext, "Position: " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            mListItemClickListener.onListItemClicked(getAdapterPosition());
         }
 
-        void bind(){
-            mTestTextView.setText("test " + getAdapterPosition());
+        void bind(Recipe recipe){
+            mTestTextView.setText(recipe.getName());
         }
     }
 
