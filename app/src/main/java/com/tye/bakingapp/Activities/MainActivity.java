@@ -20,6 +20,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
+
 public class MainActivity extends AppCompatActivity implements MainRecipeListAdapter.ListItemClickListener, RecipeProvider.ReceiveRecipeCallback {
 
     //Views
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
     public void onListItemClicked(int position) {
 
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra(DetailsActivity.EXTRA_RECIPE, mRecipes.get(position));
+        intent.putExtra(EXTRA_RECIPE, mRecipes.get(position));
         startActivity(intent);
 
     }

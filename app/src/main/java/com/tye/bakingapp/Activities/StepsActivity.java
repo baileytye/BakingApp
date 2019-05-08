@@ -5,36 +5,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tye.bakingapp.Fragments.RecipeFragment;
-import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
 
 import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
-import static com.tye.bakingapp.Fragments.StepDetailsFragment.EXTRA_STEP;
 
-public class DetailsActivity extends AppCompatActivity implements RecipeFragment.OnRecipeStepClickListener {
+public class StepsActivity extends AppCompatActivity {
 
-
-
-    private Recipe mRecipe;
+    private Step mStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        setContentView(R.layout.activity_steps);
 
         Intent intent = getIntent();
         if(intent != null) {
             if (intent.hasExtra(EXTRA_RECIPE)) {
-                mRecipe = intent.getParcelableExtra(EXTRA_RECIPE);
+                mStep = intent.getParcelableExtra(EXTRA_RECIPE);
             }
         }
-
-    }
-
-    @Override
-    public void OnRecipeStepClick(int position) {
-
     }
 }

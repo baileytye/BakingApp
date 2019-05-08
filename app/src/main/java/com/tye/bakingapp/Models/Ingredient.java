@@ -3,7 +3,7 @@ package com.tye.bakingapp.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-class Ingredient implements Parcelable {
+public class Ingredient implements Parcelable {
 
     private String ingredient;
     private float quantity;

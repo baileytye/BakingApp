@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.tye.bakingapp.Activities.DetailsActivity;
 import com.tye.bakingapp.Adapters.FragmentRecipeAdapter;
 import com.tye.bakingapp.Models.Recipe;
+import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
 
 import java.util.Objects;
@@ -23,15 +24,17 @@ import java.util.Objects;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnRecipeStepClickListener}
  * interface.
  */
 public class RecipeFragment extends Fragment {
 
+    public static final String EXTRA_RECIPE = "extra_recipe";
+
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private OnRecipeStepClickListener mListener;
 
     private Recipe mRecipe;
 
@@ -69,14 +72,14 @@ public class RecipeFragment extends Fragment {
             Intent intent = Objects.requireNonNull(getActivity()).getIntent();
 
             if(intent != null) {
-                if (intent.hasExtra(DetailsActivity.EXTRA_RECIPE)) {
-                    mRecipe = intent.getParcelableExtra(DetailsActivity.EXTRA_RECIPE);
+                if (intent.hasExtra(EXTRA_RECIPE)) {
+                    mRecipe = intent.getParcelableExtra(EXTRA_RECIPE);
                 }
             }
 
         } else {
-            if(savedInstanceState.containsKey(DetailsActivity.EXTRA_RECIPE)) {
-                mRecipe = savedInstanceState.getParcelable(DetailsActivity.EXTRA_RECIPE);
+            if(savedInstanceState.containsKey(EXTRA_RECIPE)) {
+                mRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE);
             }
         }
 
@@ -98,11 +101,11 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnRecipeStepClickListener) {
+            mListener = (OnRecipeStepClickListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnRecipeStepClickListener");
         }
     }
 
@@ -122,8 +125,7 @@ public class RecipeFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction();
+    public interface OnRecipeStepClickListener {
+        void OnRecipeStepClick(int position);
     }
 }
