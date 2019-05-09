@@ -3,6 +3,7 @@ package com.tye.bakingapp.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.exoplayer2.util.Log;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -40,6 +41,8 @@ public class Recipe implements Parcelable {
     public String serialize() {
         // Serialize this class into a JSON string using GSON
         Gson gson = new Gson();
+        Log.i("RECIPE", gson.toJson(this));
+
         return gson.toJson(this);
     }
 

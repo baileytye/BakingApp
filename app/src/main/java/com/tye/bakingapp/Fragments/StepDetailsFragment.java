@@ -128,9 +128,12 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     private void prepareVideo(){
 
-        if(mStep.getVideoURL().equals("")) return;
+        if(mStep.getVideoURL().equals("")){
+            playerView.setVisibility(View.GONE);
+            return;
+        }
 
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory( getContext(),
                 Util.getUserAgent(getContext(), "BakingApp"));
 
         Uri uri = Uri.parse(mStep.getVideoURL());
