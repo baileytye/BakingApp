@@ -2,37 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/appwidget_linear_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/widget_margin"
-    tools:ignore="Overdraw">
+    android:background="@drawable/rounded_rectangle_all_sides">
 
     <TextView
-        android:id="@+id/appwidget_app_name"
+        android:id="@+id/appwidget_recipe_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/app_name"
-        android:textSize="18sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/appwidget_recipe_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="test"
-            android:textSize="24sp"
-            android:textStyle="bold|italic" />
-    </LinearLayout>
+        android:background="@drawable/rounded_rectangle_top"
+        android:backgroundTint="#dddddd"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:text="test"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/appwidget_ingredients"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"></TextView>
+        android:lineSpacingExtra="2sp"
+        android:padding="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
 </LinearLayout>
+

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tye.bakingapp.Activities.DetailsActivity;
 import com.tye.bakingapp.Adapters.FragmentRecipeAdapter;
 import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.Models.Step;
@@ -24,17 +24,17 @@ import java.util.Objects;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnRecipeStepClickListener}
+ * Activities containing this fragment MUST implement the {@link OnStepClickRecipeFragmentListener}
  * interface.
  */
-public class RecipeFragment extends Fragment {
+public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.OnStepClickedAdapterListener {
 
     public static final String EXTRA_RECIPE = "extra_recipe";
 
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     private int mColumnCount = 1;
-    private OnRecipeStepClickListener mListener;
+    private OnStepClickRecipeFragmentListener mListener;
 
     private Recipe mRecipe;
 
@@ -46,10 +46,10 @@ public class RecipeFragment extends Fragment {
     }
 
 
-    public static RecipeFragment newInstance(int columnCount) {
+    public static RecipeFragment newInstance(Recipe recipe) {
         RecipeFragment fragment = new RecipeFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putParcelable(EXTRA_RECIPE, recipe);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,8 +58,12 @@ public class RecipeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        if(savedInstanceState != null) {
+            if (savedInstanceState.containsKey(EXTRA_RECIPE)) {
+                mRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE);
+            }
+        } else if (getArguments() != null) {
+                mRecipe = getArguments().getParcelable(EXTRA_RECIPE);
         }
     }
 
@@ -67,21 +71,6 @@ public class RecipeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
-
-        if(savedInstanceState == null){
-            Intent intent = Objects.requireNonNull(getActivity()).getIntent();
-
-            if(intent != null) {
-                if (intent.hasExtra(EXTRA_RECIPE)) {
-                    mRecipe = intent.getParcelableExtra(EXTRA_RECIPE);
-                }
-            }
-
-        } else {
-            if(savedInstanceState.containsKey(EXTRA_RECIPE)) {
-                mRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE);
-            }
-        }
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -92,7 +81,7 @@ public class RecipeFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new FragmentRecipeAdapter(mRecipe));
+            recyclerView.setAdapter(new FragmentRecipeAdapter(mRecipe, this));
         }
         return view;
     }
@@ -101,8 +90,8 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnRecipeStepClickListener) {
-            mListener = (OnRecipeStepClickListener) context;
+        if (context instanceof OnStepClickRecipeFragmentListener) {
+            mListener = (OnStepClickRecipeFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnRecipeStepClickListener");
@@ -115,6 +104,17 @@ public class RecipeFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_RECIPE, mRecipe);
+    }
+
+    @Override
+    public void onStepClickedFromAdapter(int stepNumber, Recipe recipe) {
+        mListener.onStepClickFromFragment(stepNumber, recipe);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -125,7 +125,7 @@ public class RecipeFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnRecipeStepClickListener {
-        void OnRecipeStepClick(int position);
+    public interface OnStepClickRecipeFragmentListener {
+        void onStepClickFromFragment(int stepNumber, Recipe recipe);
     }
 }

@@ -37,7 +37,7 @@ public class IngredientListWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.appwidget_ingredients, StringUtils.combineIngredients(recipe.getIngredients()));
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.appwidget_ingredients, pendingIntent);
+        views.setOnClickPendingIntent(R.id.appwidget_linear_layout, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

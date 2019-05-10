@@ -3,18 +3,14 @@ package com.tye.bakingapp.Adapters;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tye.bakingapp.Activities.DetailsActivity;
-import com.tye.bakingapp.Activities.StepsActivity;
 import com.tye.bakingapp.Models.Recipe;
+import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
-
-import static com.tye.bakingapp.Fragments.StepDetailsFragment.EXTRA_STEP;
 
 
 public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAdapter.ViewHolder> {
@@ -22,10 +18,18 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
     private static final int TYPE_INGREDIENTS = 0;
     private static final int TYPE_STEP = 1;
 
+    final private OnStepClickedAdapterListener mOnStepClickedAdapterListener;
+
     Recipe mRecipe;
 
-    public FragmentRecipeAdapter(Recipe recipe) {
+
+    public interface OnStepClickedAdapterListener {
+        void onStepClickedFromAdapter(int stepNumber, Recipe recipe);
+    }
+
+    public FragmentRecipeAdapter(Recipe recipe, OnStepClickedAdapterListener listener) {
         mRecipe = recipe;
+        mOnStepClickedAdapterListener = listener;
     }
 
     @NonNull
@@ -84,9 +88,8 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(), StepsActivity.class);
-                    intent.putExtra(EXTRA_STEP, mRecipe.getSteps().get(getAdapterPosition() - 1));
-                    view.getContext().startActivity(intent);
+                    mOnStepClickedAdapterListener.onStepClickedFromAdapter(
+                            getAdapterPosition() - 1, mRecipe);
                 }
             });
             textView = view.findViewById(R.id.content);

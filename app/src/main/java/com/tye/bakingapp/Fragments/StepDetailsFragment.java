@@ -2,14 +2,18 @@ package com.tye.bakingapp.Fragments;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -27,6 +31,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
 
@@ -36,6 +41,8 @@ import butterknife.BindAnim;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,15 +51,14 @@ import butterknife.ButterKnife;
  */
 public class StepDetailsFragment extends Fragment implements ExoPlayer.EventListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    public static final String EXTRA_STEP = "extra_step";
-
     private Step mStep;
-
+    private Recipe mRecipe;
+    private int mStepNumber;
 
     private SimpleExoPlayer simpleExoPlayer;
 
     @BindView(R.id.exo_player_view)  PlayerView playerView;
+    @Nullable
     @BindView(R.id.tv_step_instruction) TextView mStepInstructionTextView;
 
     public StepDetailsFragment() {
@@ -65,10 +71,11 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
      *
      * @return A new instance of fragment StepDetailsFragment.
      */
-    public static StepDetailsFragment newInstance(Step step) {
+    public static StepDetailsFragment newInstance(int stepNumber, Recipe recipe) {
         StepDetailsFragment fragment = new StepDetailsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_STEP, step);
+        args.putInt(Intent.EXTRA_INDEX, stepNumber);
+        args.putParcelable(EXTRA_RECIPE, recipe);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,9 +83,18 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mStep = getArguments().getParcelable(EXTRA_STEP);
+
+        if(savedInstanceState != null){
+            if(savedInstanceState.containsKey(EXTRA_RECIPE) && savedInstanceState.containsKey(Intent.EXTRA_INDEX)) {
+                mRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE);
+                mStepNumber = savedInstanceState.getInt(Intent.EXTRA_INDEX);
+            }
+        } else if(getArguments() != null){
+            mRecipe = getArguments().getParcelable(EXTRA_RECIPE);
+            mStepNumber = getArguments().getInt(Intent.EXTRA_INDEX);
         }
+
+        mStep = mRecipe.getSteps().get(mStepNumber);
     }
 
     @Override
@@ -89,23 +105,18 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
         ButterKnife.bind(this, rootView);
 
-        if(savedInstanceState == null){
-            Intent intent = Objects.requireNonNull(getActivity()).getIntent();
-
-            if(intent != null) {
-                if (intent.hasExtra(EXTRA_STEP)) {
-                    mStep = intent.getParcelableExtra(EXTRA_STEP);
-                }
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (mStep != null) {
+                mStepInstructionTextView.setText(mStep.getDescription());
             }
-
         } else {
-            if(savedInstanceState.containsKey(EXTRA_STEP)) {
-                mStep = savedInstanceState.getParcelable(EXTRA_STEP);
-            }
-        }
-
-        if (mStep != null) {
-            mStepInstructionTextView.setText(mStep.getDescription());
+            rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
         }
 
         if(simpleExoPlayer == null) {
@@ -114,6 +125,13 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         }
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_RECIPE, mRecipe);
+        outState.putInt(Intent.EXTRA_INDEX, mStepNumber);
     }
 
     private void initializePlayer() {
