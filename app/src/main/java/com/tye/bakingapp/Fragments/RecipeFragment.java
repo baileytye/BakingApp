@@ -110,6 +110,7 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
 
     @Override
     public void onStepClickedFromAdapter(int stepNumber, Recipe recipe) {
+
         mListener.onStepClickFromFragment(stepNumber, recipe);
     }
 

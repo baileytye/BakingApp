@@ -1,12 +1,14 @@
 package com.tye.bakingapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -39,8 +41,13 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        LinearLayoutManager layoutManager;
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        if(findViewById(R.id.tablet_main_container) == null) {
+            layoutManager = new LinearLayoutManager(this);
+        } else {
+            layoutManager = new GridLayoutManager(this, 3);
+        }
 
 
         mRecipeAdapter = new MainRecipeListAdapter(this, this);

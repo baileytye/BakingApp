@@ -3,14 +3,18 @@ package com.tye.bakingapp.Adapters;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tye.bakingapp.Models.Recipe;
-import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
+import com.tye.bakingapp.Utilities.StringUtils;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAdapter.ViewHolder> {
@@ -21,6 +25,7 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
     final private OnStepClickedAdapterListener mOnStepClickedAdapterListener;
 
     Recipe mRecipe;
+    private int selectedPosition;
 
 
     public interface OnStepClickedAdapterListener {
@@ -30,6 +35,7 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
     public FragmentRecipeAdapter(Recipe recipe, OnStepClickedAdapterListener listener) {
         mRecipe = recipe;
         mOnStepClickedAdapterListener = listener;
+        selectedPosition = RecyclerView.NO_POSITION;
     }
 
     @NonNull
@@ -54,6 +60,7 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        holder.itemView.setSelected(selectedPosition == position);
         holder.bindData(position);
     }
 
@@ -81,40 +88,52 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     public class StepsViewHolder extends ViewHolder{
 
-        TextView textView;
+        @BindView(R.id.tv_step_directions) TextView stepDirectionsTextView;
+        @BindView(R.id.tv_step_number) TextView stepNumberTextView;
+
+        Context mContext;
 
         public StepsViewHolder(View view) {
             super(view);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //TODO: save instance state for rotation
+                    notifyItemChanged(selectedPosition);
+                    selectedPosition = getLayoutPosition();
+                    notifyItemChanged(selectedPosition);
                     mOnStepClickedAdapterListener.onStepClickedFromAdapter(
                             getAdapterPosition() - 1, mRecipe);
                 }
             });
-            textView = view.findViewById(R.id.content);
+
+            mContext = view.getContext();
+
+            ButterKnife.bind(this, view);
         }
 
         @Override
         public void bindData(int position) {
-            textView.setText(mRecipe.getSteps().get(position - 1).getShortDescription());
+            stepDirectionsTextView.setText(mRecipe.getSteps().get(position - 1).getShortDescription());
+            stepNumberTextView.setText(mContext.getString(R.string.step_number, position - 1));
         }
     }
 
     public class IngredientsViewHolder extends ViewHolder{
 
-        TextView textView;
+        TextView itemIngridientsTextView;
 
         public IngredientsViewHolder(View view) {
             super(view);
 
-            textView = view.findViewById(R.id.textView);
+            itemIngridientsTextView = view.findViewById(R.id.tv_item_ingredients);
 
         }
 
         @Override
         public void bindData(int position) {
-            textView.setText(mRecipe.getName());
+            itemIngridientsTextView.setText(StringUtils.combineIngredients(mRecipe.getIngredients()));
         }
     }
 

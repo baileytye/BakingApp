@@ -31,12 +31,12 @@
         </receiver>
 
         <activity android:name=".Activities.StepsActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".Activities.DetailsActivity"/>
 
         <activity android:name=".Activities.DetailsActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".Activities.MainActivity"
-            android:taskAffinity="com.tye.widget.task"/>
+            android:parentActivityName=".Activities.MainActivity" />
 
         <activity android:name=".Activities.MainActivity"
             android:launchMode="singleTop">

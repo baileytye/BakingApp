@@ -27,6 +27,7 @@ public class Recipe implements Parcelable {
         this.image = image;
     }
 
+
     private Recipe(Parcel in){
         ingredients = new ArrayList<Ingredient>();
         in.readList(ingredients, Ingredient.class.getClassLoader());
@@ -62,6 +63,14 @@ public class Recipe implements Parcelable {
 
     public List<Step> getSteps() {
         return steps;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override

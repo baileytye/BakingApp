@@ -4,5 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="almostWhite">#eeeeee</color>
+    <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="pressed_color">#dddddd</color>
+    <color name="selected_color">#dddddd</color>
+    <color name="focused_color">#dddddd</color>
+    <color name="grey">#aaaaaa</color>
 </resources>

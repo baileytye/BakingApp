@@ -9,4 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     tools:context=".Fragments.RecipeFragment"
-    tools:listitem="@layout/item_fragment_recipe_step"></androidx.recyclerview.widget.RecyclerView>
+    tools:listitem="@layout/item_fragment_recipe_step">
+</androidx.recyclerview.widget.RecyclerView>

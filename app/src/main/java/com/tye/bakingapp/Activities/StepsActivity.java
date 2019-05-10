@@ -32,7 +32,7 @@ public class StepsActivity extends AppCompatActivity {
                 Recipe recipe = intent.getParcelableExtra(EXTRA_RECIPE);
                 int stepNumber = intent.getIntExtra(Intent.EXTRA_INDEX, 0);
                 StepDetailsFragment fragment = StepDetailsFragment.newInstance(stepNumber, recipe);
-                getSupportFragmentManager().beginTransaction().replace(R.id.steps_container, fragment).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.activity_steps_container, fragment).commit();
                 ab.setTitle(recipe.getName());
             }
         }

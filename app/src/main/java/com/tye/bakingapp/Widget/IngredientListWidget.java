@@ -30,7 +30,7 @@ public class IngredientListWidget extends AppWidgetProvider {
 
 
         Intent intent = new Intent(context, DetailsActivity.class);
-        intent.setAction("start_details");
+        //intent.setAction("start_details");
         //intent.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_RECIPE, recipe);
 

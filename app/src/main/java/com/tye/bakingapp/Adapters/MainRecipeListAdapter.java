@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +14,9 @@ import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.R;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAdapter.ItemViewHolder> {
@@ -65,13 +68,15 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        final TextView mTestTextView;
+        @BindView(R.id.tv_item_recipe) TextView mItemNameTextView;
+        @BindView(R.id.iv_item_recipe) ImageView mItemImageView;
+
 
         ItemViewHolder(View view){
 
             super(view);
 
-            mTestTextView = view.findViewById(R.id.tv_item_recipe);
+            ButterKnife.bind(this, view);
 
             view.setOnClickListener(this);
         }
@@ -83,7 +88,11 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
         }
 
         void bind(Recipe recipe){
-            mTestTextView.setText(recipe.getName());
+            mItemNameTextView.setText(recipe.getName());
+            if(recipe.getImage().equals("")){
+                mItemImageView.setVisibility(View.GONE);
+            }
+
         }
     }
 
