@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.tye.bakingapp.Adapters.MainRecipeListAdapter;
@@ -59,6 +60,16 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
         intent.putExtra(EXTRA_RECIPE, mRecipes.get(position));
         startActivity(intent);
 
+    }
+
+    @Override //Providing Up navigation
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

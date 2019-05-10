@@ -31,8 +31,6 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
 
     public static final String EXTRA_RECIPE = "extra_recipe";
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-
     private int mColumnCount = 1;
     private OnStepClickRecipeFragmentListener mListener;
 

@@ -31,12 +31,13 @@ public class IngredientListWidget extends AppWidgetProvider {
 
         Intent intent = new Intent(context, DetailsActivity.class);
         intent.setAction("start_details");
+        //intent.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_RECIPE, recipe);
 
         views.setTextViewText(R.id.appwidget_recipe_name, recipe.getName());
         views.setTextViewText(R.id.appwidget_ingredients, StringUtils.combineIngredients(recipe.getIngredients()));
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.appwidget_linear_layout, pendingIntent);
 
         // Instruct the widget manager to update the widget

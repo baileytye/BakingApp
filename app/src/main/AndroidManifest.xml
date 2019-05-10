@@ -35,7 +35,8 @@
 
         <activity android:name=".Activities.DetailsActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".Activities.MainActivity"/>
+            android:parentActivityName=".Activities.MainActivity"
+            android:taskAffinity="com.tye.widget.task"/>
 
         <activity android:name=".Activities.MainActivity"
             android:launchMode="singleTop">

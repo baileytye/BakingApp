@@ -20,6 +20,12 @@ public class StepsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
 
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
         if(intent != null) {
             if (intent.hasExtra(EXTRA_RECIPE) && intent.hasExtra(Intent.EXTRA_INDEX)) {
@@ -27,13 +33,11 @@ public class StepsActivity extends AppCompatActivity {
                 int stepNumber = intent.getIntExtra(Intent.EXTRA_INDEX, 0);
                 StepDetailsFragment fragment = StepDetailsFragment.newInstance(stepNumber, recipe);
                 getSupportFragmentManager().beginTransaction().replace(R.id.steps_container, fragment).commit();
+                ab.setTitle(recipe.getName());
             }
         }
 
-        // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
 
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
     }
+
 }
