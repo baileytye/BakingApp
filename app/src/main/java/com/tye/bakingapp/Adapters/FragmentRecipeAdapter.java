@@ -25,17 +25,19 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
     final private OnStepClickedAdapterListener mOnStepClickedAdapterListener;
 
     Recipe mRecipe;
-    private int selectedPosition;
+    private boolean mIsTablet;
+    private int mSelectedPosition;
 
 
     public interface OnStepClickedAdapterListener {
         void onStepClickedFromAdapter(int stepNumber, Recipe recipe);
     }
 
-    public FragmentRecipeAdapter(Recipe recipe, OnStepClickedAdapterListener listener) {
+    public FragmentRecipeAdapter(Recipe recipe, OnStepClickedAdapterListener listener, boolean isTablet, int selectedPosition) {
         mRecipe = recipe;
         mOnStepClickedAdapterListener = listener;
-        selectedPosition = RecyclerView.NO_POSITION;
+        mSelectedPosition = selectedPosition;
+        mIsTablet = isTablet;
     }
 
     @NonNull
@@ -60,7 +62,7 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        holder.itemView.setSelected(selectedPosition == position);
+        holder.itemView.setSelected(mSelectedPosition == position);
         holder.bindData(position);
     }
 
@@ -99,10 +101,15 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     //TODO: save instance state for rotation
-                    notifyItemChanged(selectedPosition);
-                    selectedPosition = getLayoutPosition();
-                    notifyItemChanged(selectedPosition);
+                    if(mIsTablet) {
+                        notifyItemChanged(mSelectedPosition);
+                        mSelectedPosition = getLayoutPosition();
+                        notifyItemChanged(mSelectedPosition);
+                    }
+
+
                     mOnStepClickedAdapterListener.onStepClickedFromAdapter(
                             getAdapterPosition() - 1, mRecipe);
                 }

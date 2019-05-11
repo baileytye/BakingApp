@@ -6,17 +6,16 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.util.Log;
 
 import com.tye.bakingapp.Adapters.FragmentRecipeAdapter;
 import com.tye.bakingapp.Models.Recipe;
-import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
 
 import java.util.Objects;
@@ -31,10 +30,10 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
 
     public static final String EXTRA_RECIPE = "extra_recipe";
 
-    private int mColumnCount = 1;
     private OnStepClickRecipeFragmentListener mListener;
 
     private Recipe mRecipe;
+    private int mSelected;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -60,6 +59,11 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
             if (savedInstanceState.containsKey(EXTRA_RECIPE)) {
                 mRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE);
             }
+            if(savedInstanceState.containsKey(Intent.EXTRA_INDEX)){
+                mSelected = savedInstanceState.getInt(Intent.EXTRA_INDEX);
+            } else {
+                mSelected = RecyclerView.NO_POSITION;
+            }
         } else if (getArguments() != null) {
                 mRecipe = getArguments().getParcelable(EXTRA_RECIPE);
         }
@@ -70,16 +74,16 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
 
+        boolean isTablet = (Objects.requireNonNull(getActivity()).findViewById(R.id.details_steps_container) != null);
+
+        Log.i("Recipe Fragment", "isTablet: " + isTablet);
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new FragmentRecipeAdapter(mRecipe, this));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(new FragmentRecipeAdapter(mRecipe, this, isTablet, mSelected));
         }
         return view;
     }
@@ -106,11 +110,15 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_RECIPE, mRecipe);
+        outState.putInt(Intent.EXTRA_INDEX, mSelected);
+
     }
 
     @Override
     public void onStepClickedFromAdapter(int stepNumber, Recipe recipe) {
 
+        //Steps start after ingredients, add 1
+        mSelected = stepNumber + 1;
         mListener.onStepClickFromFragment(stepNumber, recipe);
     }
 
