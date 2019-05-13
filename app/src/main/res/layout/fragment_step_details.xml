@@ -21,7 +21,15 @@
                 android:id="@+id/exo_player_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:resize_mode="fixed_width"/>
+                app:resize_mode="fixed_width">
+
+            </com.google.android.exoplayer2.ui.PlayerView>
+
+            <TextView
+                android:id="@+id/tv_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_step_instruction"
@@ -30,7 +38,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:text="@string/hello_blank_fragment" />
+                android:text="@string/hello_blank_fragment"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="18sp" />
 
 
         </LinearLayout>
@@ -59,6 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
+        android:pointerIcon="arrow"
         android:text="Next Step"
         app:layout_constraintBottom_toBottomOf="@+id/b_previous_step"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,6 +86,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:drawableLeft="@drawable/ic_keyboard_arrow_left_black_24dp"
         android:text="Previous Step"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"

@@ -13,13 +13,16 @@ public class StringUtils {
         StringBuilder s = new StringBuilder(150);
         DecimalFormat format = new DecimalFormat("0.#");
 
+        int i = 0;
         for( Ingredient ingredient: ingredients){
+            i++;
             s.append(format.format(ingredient.getQuantity()));
             s.append(" ");
             s.append(cleanMeasure(ingredient.getMeasure()));
             s.append(" ");
             s.append(ingredient.getIngredient());
-            s.append('\n');
+            if(i != ingredients.size())
+                s.append('\n');
         }
 
         return s.toString();

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -53,9 +54,16 @@ import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
  */
 public class StepDetailsFragment extends Fragment implements ExoPlayer.EventListener {
 
+    public final static String EXTRA_POSITION = "extra_position";
+    public final static String EXTRA_PLAY_WHEN_READY = "extra_play_when_ready";
+
     private Step mStep;
     private Recipe mRecipe;
     private int mStepNumber;
+
+    private long currentPosition;
+    private boolean playWhenReady;
+
 
     private SimpleExoPlayer simpleExoPlayer;
     private boolean isTablet;
@@ -63,6 +71,12 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @BindView(R.id.exo_player_view)  PlayerView playerView;
     @Nullable
     @BindView(R.id.tv_step_instruction) TextView mStepInstructionTextView;
+    @Nullable
+    @BindView(R.id.b_next_step) Button mNextStepButton;
+    @Nullable
+    @BindView(R.id.b_previous_step) Button mPreviousStepButton;
+    @Nullable
+    @BindView(R.id.tv_item_recipe) TextView mNoVideoTextView;
 
     public StepDetailsFragment() {
         // Required empty public constructor
@@ -92,9 +106,17 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
                 mRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE);
                 mStepNumber = savedInstanceState.getInt(Intent.EXTRA_INDEX);
             }
+            if(savedInstanceState.containsKey(EXTRA_PLAY_WHEN_READY)){
+                playWhenReady = savedInstanceState.getBoolean(EXTRA_PLAY_WHEN_READY);
+            }
+            if(savedInstanceState.containsKey(EXTRA_POSITION)){
+                currentPosition = savedInstanceState.getLong(EXTRA_POSITION);
+            }
         } else if(getArguments() != null){
             mRecipe = getArguments().getParcelable(EXTRA_RECIPE);
             mStepNumber = getArguments().getInt(Intent.EXTRA_INDEX);
+            playWhenReady = false;
+            currentPosition = 0;
         }
 
         mStep = mRecipe.getSteps().get(mStepNumber);
@@ -116,6 +138,21 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
                 if (mStepInstructionTextView != null) {
                     mStepInstructionTextView.setText(mStep.getDescription());
                 }
+                mNextStepButton.setOnClickListener(v -> {
+                    if(mStepNumber < mRecipe.getSteps().size() - 1) {
+                        mStep = mRecipe.getSteps().get(++mStepNumber);
+                        updateStepUI();
+                    }
+                });
+
+                mPreviousStepButton.setOnClickListener(v -> {
+                    if(mStepNumber > 0) {
+                        mStep = mRecipe.getSteps().get(--mStepNumber);
+                        updateStepUI();
+                    }
+                });
+
+                displayButtons();
             } else {
                 rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -123,7 +160,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                displayVideoIfPresent();
             }
+            //Tablet case for portrait and landscape
         } else {
             if (mStepInstructionTextView != null) {
                 mStepInstructionTextView.setText(mStep.getDescription());
@@ -143,6 +182,8 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_RECIPE, mRecipe);
         outState.putInt(Intent.EXTRA_INDEX, mStepNumber);
+        outState.putLong(EXTRA_POSITION, currentPosition);
+        outState.putBoolean(EXTRA_PLAY_WHEN_READY, playWhenReady);
     }
 
     private void initializePlayer() {
@@ -152,15 +193,11 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector,loadControl);
         playerView.setPlayer(simpleExoPlayer);
         simpleExoPlayer.addListener(this);
-
     }
 
     private void prepareVideo(){
 
-        if(mStep.getVideoURL().equals("")){
-            playerView.setVisibility(View.GONE);
-            return;
-        }
+        if(!displayVideoIfPresent()) return;
 
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory( getContext(),
                 Util.getUserAgent(getContext(), "BakingApp"));
@@ -170,12 +207,58 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
 
         simpleExoPlayer.prepare(videoSource);
+        simpleExoPlayer.setPlayWhenReady(playWhenReady);
+        simpleExoPlayer.seekTo(currentPosition);
+
+    }
+
+    private boolean displayVideoIfPresent(){
+        if(mStep.getVideoURL().equals("")){
+            playerView.setVisibility(View.GONE);
+            if(mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.VISIBLE);
+            return false;
+        } else {
+            if(mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.INVISIBLE);
+            playerView.setVisibility(View.VISIBLE);
+            return true;
+        }
+    }
+
+    private void showError(){
+
     }
 
     private void releasePlayer(){
+
+        currentPosition = simpleExoPlayer.getCurrentPosition();
+        playWhenReady = simpleExoPlayer.getPlayWhenReady();
         simpleExoPlayer.stop();
         simpleExoPlayer.release();
         simpleExoPlayer = null;
+    }
+
+    private void updateStepUI(){
+
+        simpleExoPlayer.stop();
+        prepareVideo();
+        simpleExoPlayer.setPlayWhenReady(false);
+        mStepInstructionTextView.setText(mStep.getDescription());
+
+        displayButtons();
+    }
+
+    private void displayButtons(){
+        if(mStepNumber == mRecipe.getSteps().size() - 1){
+            mNextStepButton.setVisibility(View.INVISIBLE);
+        } else {
+            mNextStepButton.setVisibility(View.VISIBLE);
+        }
+
+        if(mStepNumber == 0){
+            mPreviousStepButton.setVisibility(View.INVISIBLE);
+        } else {
+            mPreviousStepButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

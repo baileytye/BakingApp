@@ -13,6 +13,8 @@ import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.R;
 import com.tye.bakingapp.Utilities.StringUtils;
 
+import org.w3c.dom.Text;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -62,7 +64,9 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        holder.itemView.setSelected(mSelectedPosition == position);
+        if(mIsTablet == true) {
+            holder.itemView.setSelected(mSelectedPosition == position);
+        }
         holder.bindData(position);
     }
 
@@ -129,18 +133,19 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     public class IngredientsViewHolder extends ViewHolder{
 
-        TextView itemIngridientsTextView;
+        @BindView(R.id.tv_item_ingredients) TextView itemIngridientsTextView;
+        @BindView(R.id.tv_item_servings) TextView itemServingsTextView;
 
         public IngredientsViewHolder(View view) {
             super(view);
 
-            itemIngridientsTextView = view.findViewById(R.id.tv_item_ingredients);
-
+            ButterKnife.bind(this, view);
         }
 
         @Override
         public void bindData(int position) {
             itemIngridientsTextView.setText(StringUtils.combineIngredients(mRecipe.getIngredients()));
+            itemServingsTextView.setText(String.valueOf(mRecipe.getServings()));
         }
     }
 

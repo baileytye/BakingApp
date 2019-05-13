@@ -15,6 +15,7 @@ import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
 
 public class StepsActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,17 +28,23 @@ public class StepsActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        if(intent != null) {
-            if (intent.hasExtra(EXTRA_RECIPE) && intent.hasExtra(Intent.EXTRA_INDEX)) {
-                Recipe recipe = intent.getParcelableExtra(EXTRA_RECIPE);
-                int stepNumber = intent.getIntExtra(Intent.EXTRA_INDEX, 0);
-                StepDetailsFragment fragment = StepDetailsFragment.newInstance(stepNumber, recipe);
-                getSupportFragmentManager().beginTransaction().add(R.id.activity_steps_container, fragment).commit();
-                ab.setTitle(recipe.getName());
+        if(savedInstanceState == null) {
+            if (intent != null) {
+                if (intent.hasExtra(EXTRA_RECIPE) && intent.hasExtra(Intent.EXTRA_INDEX)) {
+                    Recipe recipe = intent.getParcelableExtra(EXTRA_RECIPE);
+                    int stepNumber = intent.getIntExtra(Intent.EXTRA_INDEX, 0);
+                    StepDetailsFragment fragment = StepDetailsFragment.newInstance(stepNumber, recipe);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.activity_steps_container, fragment).commit();
+                    ab.setTitle(recipe.getName());
+                }
             }
         }
+    }
 
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 }

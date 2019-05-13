@@ -53,6 +53,14 @@ public class Recipe implements Parcelable {
         return gson.fromJson(serializedData, Recipe.class);
     }
 
+    public int getServings() {
+        return servings;
+    }
+
+    public void setServings(int servings) {
+        this.servings = servings;
+    }
+
     public String getName() {
         return name;
     }
