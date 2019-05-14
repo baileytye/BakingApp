@@ -7,3 +7,7 @@ Retrofit2.
 Picaso.   
 Butterknife.  
 
+Tests worked on a pixel 2, with animations turned off (Phone tests only). Should use a dummy input instead of fetching from network ideally.  
+
+
+
