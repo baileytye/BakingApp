@@ -11,14 +11,14 @@ import java.util.List;
 
 public class Recipe implements Parcelable {
 
-    private int id;
-    private String name;
-    private List<Ingredient> ingredients;
-    private List<Step> steps;
-    private int servings;
-    private String image;
+    private final int id;
+    private final String name;
+    private final List<Ingredient> ingredients;
+    private final List<Step> steps;
+    private final int servings;
+    private final String image;
 
-    public Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps, int servings, String image) {
+    private Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps, int servings, String image) {
         this.id = id;
         this.name = name;
         this.ingredients = ingredients;
@@ -29,9 +29,9 @@ public class Recipe implements Parcelable {
 
 
     private Recipe(Parcel in){
-        ingredients = new ArrayList<Ingredient>();
+        ingredients = new ArrayList<>();
         in.readList(ingredients, Ingredient.class.getClassLoader());
-        steps = new ArrayList<Step>();
+        steps = new ArrayList<>();
         in.readList(steps, Step.class.getClassLoader());
         id = in.readInt();
         name = in.readString();
@@ -57,10 +57,6 @@ public class Recipe implements Parcelable {
         return servings;
     }
 
-    public void setServings(int servings) {
-        this.servings = servings;
-    }
-
     public String getName() {
         return name;
     }
@@ -75,10 +71,6 @@ public class Recipe implements Parcelable {
 
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     @Override

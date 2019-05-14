@@ -14,14 +14,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.tye.bakingapp.Adapters.MainRecipeListAdapter;
 import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.R;
 import com.tye.bakingapp.Utilities.RecipeProvider;
 import com.tye.bakingapp.Utilities.SimpleIdlingResource;
-import com.tye.bakingapp.Utilities.StringUtils;
 import com.tye.bakingapp.Widget.IngredientListWidget;
 
 import java.util.List;
@@ -31,14 +33,13 @@ import butterknife.ButterKnife;
 
 public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeListAdapter.ListItemClickListener, RecipeProvider.ReceiveRecipeCallback {
 
-    private static final String EXTRA_RECIPE = "extra_recipe";
-
     private static final String PREFS_NAME = "com.tye.bakingapp";
     private static final String PREF_PREFIX_KEY = "prefix_";
 
     //Views
-    @BindView(R.id.rv_recipes)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.rv_recipes) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_main_error) TextView mErrorTextView;
+    @BindView(R.id.pb_loading) ProgressBar mProgressBar;
 
     private MainRecipeListAdapter mRecipeAdapter;
     private List<Recipe> mRecipes;
@@ -76,8 +77,6 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        String name = mRecipes.get(position).getName();
-        String ingredients = StringUtils.combineIngredients(mRecipes.get(position).getIngredients());
         int appWidgetId;
 
         if (extras != null) {
@@ -106,13 +105,11 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    public static void saveIngredientsToPref(Context context, int appWidgetId, Recipe recipe) {
+    private static void saveIngredientsToPref(Context context, int appWidgetId, Recipe recipe) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         String serializedRecipe = recipe.serialize();
 
         prefs.putString(PREF_PREFIX_KEY + appWidgetId + "recipe", serializedRecipe);
-        //prefs.putString(PREF_PREFIX_KEY + appWidgetId + "name", name);
-        //prefs.putString(PREF_PREFIX_KEY + appWidgetId + "ingredients", ingredients);
         prefs.apply();
     }
 
@@ -123,13 +120,34 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
         return prefs.getString(PREF_PREFIX_KEY + appWidgetId + "recipe", null);
     }
 
+    private void fetchRecipes(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecipeProvider.retrieveRecipeList(mIdlingResource);
+    }
+
 
     @Override
     public void onDone(List<Recipe> recipes) {
+
+        mErrorTextView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+
         mRecipes = recipes;
         mRecipeAdapter.setRecipes(mRecipes);
         mRecipeAdapter.notifyDataSetChanged();
         Log.i("ON_CREATE", "Number of recipes: " + mRecipes.size());
+    }
+
+    @Override
+    public void onFail(String error){
+
+        mErrorTextView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+
+        mErrorTextView.setText(error + "\nClick to retry...");
+        mErrorTextView.setOnClickListener(v -> fetchRecipes());
     }
 
     /**

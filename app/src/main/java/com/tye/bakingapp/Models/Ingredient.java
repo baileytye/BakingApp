@@ -5,9 +5,9 @@ import android.os.Parcelable;
 
 public class Ingredient implements Parcelable {
 
-    private String ingredient;
-    private float quantity;
-    private String measure;
+    private final String ingredient;
+    private final float quantity;
+    private final String measure;
 
     public Ingredient(String ingredient, float quantity, String measure) {
         this.ingredient = ingredient;

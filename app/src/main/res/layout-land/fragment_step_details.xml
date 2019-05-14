@@ -10,7 +10,7 @@
         android:id="@+id/tv_no_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No video for step."
+        android:text="@string/no_video_for_step"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="#FFFFFF"
         android:visibility="visible"

@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import com.tye.bakingapp.Fragments.StepDetailsFragment;
 import com.tye.bakingapp.Models.Recipe;
-import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
 
 import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;

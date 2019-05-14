@@ -1,27 +1,14 @@
 package com.tye.bakingapp;
 
 import android.os.RemoteException;
-import android.widget.TextView;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
-import static androidx.test.espresso.matcher.ViewMatchers.withResourceName;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.AllOf.allOf;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
@@ -33,13 +20,10 @@ import androidx.test.filters.LargeTest;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.uiautomator.UiDevice;
 
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.tye.bakingapp.Activities.DetailsActivity;
 import com.tye.bakingapp.Activities.MainActivity;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,13 +41,10 @@ public class MyTestSuite {
     @Before
     public void registerIdlingResource() {
         ActivityScenario activityScenario = ActivityScenario.launch(MainActivity.class);
-        activityScenario.onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
-            @Override
-            public void perform(MainActivity activity) {
-                mIdlingResource = activity.getIdlingResource();
-                // To prove that the test fails, omit this call:
-                IdlingRegistry.getInstance().register(mIdlingResource);
-            }
+        activityScenario.onActivity((ActivityScenario.ActivityAction<MainActivity>) activity -> {
+            mIdlingResource = activity.getIdlingResource();
+            // To prove that the test fails, omit this call:
+            IdlingRegistry.getInstance().register(mIdlingResource);
         });
     }
 
@@ -85,7 +66,7 @@ public class MyTestSuite {
         onView(withId(R.id.tv_step_instruction)).check(matches(isDisplayed()));
     }
 
-    
+
     //Test rotation of steps fragment to make sure the video is displayed if present
     @Test
     public void testRotation(){

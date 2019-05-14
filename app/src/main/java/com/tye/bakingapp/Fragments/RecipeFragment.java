@@ -29,11 +29,13 @@ import java.util.Objects;
 public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.OnStepClickedAdapterListener {
 
     public static final String EXTRA_RECIPE = "extra_recipe";
+    private final static String EXTRA_SCROLL_POSITION = "extra_scroll_position";
 
     private OnStepClickRecipeFragmentListener mListener;
 
     private Recipe mRecipe;
     private int mSelected;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -70,7 +72,7 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
 
@@ -82,7 +84,15 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            mLayoutManager = new LinearLayoutManager(context);
+
+            if(savedInstanceState != null) {
+                if (savedInstanceState.containsKey(EXTRA_SCROLL_POSITION)) {
+                    mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(EXTRA_SCROLL_POSITION));
+                }
+            }
+
+            recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(new FragmentRecipeAdapter(mRecipe, this, isTablet, mSelected));
         }
         return view;
@@ -111,6 +121,7 @@ public class RecipeFragment extends Fragment implements FragmentRecipeAdapter.On
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_RECIPE, mRecipe);
         outState.putInt(Intent.EXTRA_INDEX, mSelected);
+        outState.putParcelable(EXTRA_SCROLL_POSITION, mLayoutManager.onSaveInstanceState());
 
     }
 

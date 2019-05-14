@@ -15,8 +15,6 @@ import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.R;
 import com.tye.bakingapp.Utilities.StringUtils;
 
-import org.w3c.dom.Text;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -28,8 +26,8 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     final private OnStepClickedAdapterListener mOnStepClickedAdapterListener;
 
-    Recipe mRecipe;
-    private boolean mIsTablet;
+    private final Recipe mRecipe;
+    private final boolean mIsTablet;
     private int mSelectedPosition;
 
     public interface OnStepClickedAdapterListener {
@@ -65,7 +63,7 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        if(mIsTablet == true) {
+        if(mIsTablet) {
             holder.itemView.setSelected(mSelectedPosition == position);
         }
         holder.bindData(position);
@@ -85,36 +83,33 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
 
         }
-        public abstract void bindData(int position);
+        protected abstract void bindData(int position);
     }
 
-    public class StepsViewHolder extends ViewHolder{
+    protected class StepsViewHolder extends ViewHolder{
 
         @BindView(R.id.tv_step_directions) TextView stepDirectionsTextView;
         @BindView(R.id.tv_step_number) TextView stepNumberTextView;
 
-        Context mContext;
+        final Context mContext;
 
-        public StepsViewHolder(View view) {
+        StepsViewHolder(View view) {
             super(view);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            view.setOnClickListener(view1 -> {
 
-                    if(mIsTablet) {
-                        notifyItemChanged(mSelectedPosition);
-                        mSelectedPosition = getLayoutPosition();
-                        notifyItemChanged(mSelectedPosition);
-                    }
-
-                    mOnStepClickedAdapterListener.onStepClickedFromAdapter(
-                            getAdapterPosition() - 1, mRecipe);
+                if(mIsTablet) {
+                    notifyItemChanged(mSelectedPosition);
+                    mSelectedPosition = getLayoutPosition();
+                    notifyItemChanged(mSelectedPosition);
                 }
+
+                mOnStepClickedAdapterListener.onStepClickedFromAdapter(
+                        getAdapterPosition() - 1, mRecipe);
             });
 
             mContext = view.getContext();
@@ -129,13 +124,13 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
         }
     }
 
-    public class IngredientsViewHolder extends ViewHolder{
+    protected class IngredientsViewHolder extends ViewHolder{
 
         @BindView(R.id.tv_item_ingredients) TextView itemIngridientsTextView;
         @BindView(R.id.tv_item_servings) TextView itemServingsTextView;
         @BindView(R.id.iv_recipe_image) ImageView recipeImageView;
 
-        public IngredientsViewHolder(View view) {
+        IngredientsViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);

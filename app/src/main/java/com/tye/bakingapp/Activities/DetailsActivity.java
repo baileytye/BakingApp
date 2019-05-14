@@ -10,7 +10,6 @@ import android.util.Log;
 import com.tye.bakingapp.Fragments.RecipeFragment;
 import com.tye.bakingapp.Fragments.StepDetailsFragment;
 import com.tye.bakingapp.Models.Recipe;
-import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
 
 import java.util.Objects;
@@ -18,9 +17,6 @@ import java.util.Objects;
 import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
 
 public class DetailsActivity extends AppCompatActivity implements RecipeFragment.OnStepClickRecipeFragmentListener {
-
-    RecipeFragment mRecipeFragment;
-    StepDetailsFragment mStepDetailsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +33,7 @@ public class DetailsActivity extends AppCompatActivity implements RecipeFragment
             Log.v("DetailsActivity", "Intent is non null");
             if (getIntent().hasExtra(EXTRA_RECIPE)) {
                Recipe recipe = getIntent().getParcelableExtra(EXTRA_RECIPE);
-               mRecipeFragment = RecipeFragment.newInstance(recipe);
+                RecipeFragment mRecipeFragment = RecipeFragment.newInstance(recipe);
                getSupportFragmentManager().beginTransaction().add(R.id.details_recipe_container, mRecipeFragment).commit();
                ab.setTitle(recipe.getName());
             }
@@ -54,7 +50,7 @@ public class DetailsActivity extends AppCompatActivity implements RecipeFragment
             startActivity(intent);
         } else {
             Log.i("DetailsActivity", "Tablet detected");
-            mStepDetailsFragment = StepDetailsFragment.newInstance(stepNumber, recipe);
+            StepDetailsFragment mStepDetailsFragment = StepDetailsFragment.newInstance(stepNumber, recipe);
             getSupportFragmentManager().beginTransaction().replace(R.id.details_steps_container, mStepDetailsFragment).commit();
         }
     }

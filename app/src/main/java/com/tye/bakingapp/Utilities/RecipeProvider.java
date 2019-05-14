@@ -1,8 +1,8 @@
 package com.tye.bakingapp.Utilities;
 
-import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tye.bakingapp.Models.Recipe;
@@ -19,9 +19,10 @@ public class RecipeProvider {
 
     public interface ReceiveRecipeCallback{
         void onDone(List<Recipe> recipes);
+        void onFail(String error);
     }
 
-    private ReceiveRecipeCallback callback;
+    private final ReceiveRecipeCallback callback;
 
     public RecipeProvider(ReceiveRecipeCallback c){
         callback = c;
@@ -50,28 +51,29 @@ public class RecipeProvider {
         call.enqueue(new Callback<List<Recipe>>() {
 
             @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+            public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
                 if (idlingResource != null) {
                     idlingResource.setIdleState(true);
                 }
                 if(!response.isSuccessful()){
 
                     Log.e("HTTP Request Error", String.valueOf(response.code()));
+                    callback.onFail("HTTP Error " + response.code());
                     return;
                 }
                 if (response.body() != null) {
                     callback.onDone(response.body());
                 } else {
-                    Log.e("Recipe List Error", "Movie list is null");
+                    Log.e("Recipe List Error", "Recipes is null");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
                 if (idlingResource != null) {
                     idlingResource.setIdleState(true);
                 }
-
+                callback.onFail(t.getMessage());
                 Log.e("Retrofit Call Error", t.getMessage());
             }
         });

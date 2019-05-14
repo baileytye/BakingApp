@@ -28,7 +28,7 @@ public class StringUtils {
         return s.toString();
     }
 
-    public static String cleanMeasure(String in){
+    private static String cleanMeasure(String in){
         String out;
         switch(in){
             case "CUP":

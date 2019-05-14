@@ -28,7 +28,7 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
 
     private List<Recipe> mRecipes;
 
-    private Context mContext;
+    private final Context mContext;
 
     public MainRecipeListAdapter(ListItemClickListener listener, Context context) {
         mListItemClickListener = listener;
@@ -58,7 +58,7 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
         return mNumberOfItems;
     }
 
-    public void setNumberOfItems(int num) {
+    private void setNumberOfItems(int num) {
         mNumberOfItems = num;
     }
 

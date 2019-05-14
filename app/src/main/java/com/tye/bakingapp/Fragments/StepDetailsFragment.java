@@ -48,8 +48,8 @@ import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
  */
 public class StepDetailsFragment extends Fragment implements ExoPlayer.EventListener {
 
-    public final static String EXTRA_POSITION = "extra_position";
-    public final static String EXTRA_PLAY_WHEN_READY = "extra_play_when_ready";
+    private final static String EXTRA_POSITION = "extra_position";
+    private final static String EXTRA_PLAY_WHEN_READY = "extra_play_when_ready";
 
     private Step mStep;
     private Recipe mRecipe;
@@ -60,7 +60,6 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
 
     private SimpleExoPlayer simpleExoPlayer;
-    private boolean isTablet;
 
     @BindView(R.id.exo_player_view)  PlayerView playerView;
     @Nullable
@@ -119,12 +118,12 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
 
-        isTablet = (rootView.findViewById(R.id.tablet_steps_layout) != null);
+        boolean isTablet = (rootView.findViewById(R.id.tablet_steps_layout) != null);
 
         ButterKnife.bind(this, rootView);
 
@@ -233,10 +232,6 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         }
 
         return videoPresent;
-    }
-
-    private void showError(){
-
     }
 
     private void releasePlayer(){

@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.IdlingResource;
 
 import android.content.Intent;
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tye.bakingapp.Adapters.MainRecipeListAdapter;
 import com.tye.bakingapp.Models.Recipe;
@@ -32,12 +33,17 @@ import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
 
 public class MainActivity extends AppCompatActivity implements MainRecipeListAdapter.ListItemClickListener, RecipeProvider.ReceiveRecipeCallback {
 
+    private static final String EXTRA_SCROLL_POSITION = "extra_scroll_position";
+
     //Views
     @BindView(R.id.rv_recipes) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_main_error) TextView mErrorTextView;
+    @BindView(R.id.pb_loading) ProgressBar mProgressBar;
 
     private MainRecipeListAdapter mRecipeAdapter;
     private List<Recipe> mRecipes;
     private RecipeProvider mRecipeProvider;
+    private LinearLayoutManager mLayoutManager;
 
     // The Idling Resource which will be null in production.
     @Nullable
@@ -50,23 +56,39 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-        LinearLayoutManager layoutManager;
+
 
         if(findViewById(R.id.tablet_main_container) == null) {
-            layoutManager = new LinearLayoutManager(this);
+            mLayoutManager = new LinearLayoutManager(this);
         } else {
-            layoutManager = new GridLayoutManager(this, 3);
+            mLayoutManager = new GridLayoutManager(this, 3);
         }
 
+        if(savedInstanceState != null) {
+            if (savedInstanceState.containsKey(EXTRA_SCROLL_POSITION)) {
+                mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(EXTRA_SCROLL_POSITION));
+            }
+        }
 
         mRecipeAdapter = new MainRecipeListAdapter(this, this);
 
         mRecipeProvider = new RecipeProvider(this);
-        mRecipeProvider.retrieveRecipeList(mIdlingResource);
+        fetchRecipes();
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mRecipeAdapter);
+    }
+
+    private void fetchRecipes(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecipeProvider.retrieveRecipeList(mIdlingResource);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putParcelable(EXTRA_SCROLL_POSITION, mLayoutManager.onSaveInstanceState());
     }
 
     @Override
@@ -80,20 +102,35 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
 
     @Override //Providing Up navigation
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
+
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDone(List<Recipe> recipes) {
+
+        mErrorTextView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+
         mRecipes = recipes;
         mRecipeAdapter.setRecipes(mRecipes);
         mRecipeAdapter.notifyDataSetChanged();
         Log.i("ON_CREATE", "Number of recipes: " + mRecipes.size());
+    }
+
+    @Override
+    public void onFail(String error){
+
+        mErrorTextView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+
+        mErrorTextView.setText(error + "\nClick to retry...");
+        mErrorTextView.setOnClickListener(v -> fetchRecipes());
     }
 
     /**
