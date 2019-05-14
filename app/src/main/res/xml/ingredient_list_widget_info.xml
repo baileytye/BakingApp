@@ -4,7 +4,7 @@
     android:initialLayout="@layout/ingredient_list_widget"
     android:minWidth="180dp"
     android:minHeight="110dp"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewImage="@drawable/appwidget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
     android:configure="com.tye.bakingapp.Activities.AppWidgetConfigure"
