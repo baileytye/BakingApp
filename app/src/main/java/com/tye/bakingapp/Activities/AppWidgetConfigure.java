@@ -120,12 +120,19 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
         return prefs.getString(PREF_PREFIX_KEY + appWidgetId + "recipe", null);
     }
 
+    /**
+     * Fetch recipes using retrofit2
+     */
     private void fetchRecipes(){
         mProgressBar.setVisibility(View.VISIBLE);
         mRecipeProvider.retrieveRecipeList(mIdlingResource);
     }
 
 
+    /**
+     * Implemented from recipe provider as callback for receiving recipes
+     * @param recipes
+     */
     @Override
     public void onDone(List<Recipe> recipes) {
 
@@ -139,6 +146,10 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
         Log.i("ON_CREATE", "Number of recipes: " + mRecipes.size());
     }
 
+    /**
+     * Implemented from recipe provider as callback when recipe fetch fails
+     * @param error code
+     */
     @Override
     public void onFail(String error){
 

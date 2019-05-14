@@ -49,14 +49,12 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
     @Nullable
     private SimpleIdlingResource mIdlingResource;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
 
         if(findViewById(R.id.tablet_main_container) == null) {
             mLayoutManager = new LinearLayoutManager(this);
@@ -71,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
         }
 
         mRecipeAdapter = new MainRecipeListAdapter(this, this);
-
         mRecipeProvider = new RecipeProvider(this);
+
         fetchRecipes();
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -80,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
         mRecyclerView.setAdapter(mRecipeAdapter);
     }
 
+    /**
+     * Fetch recipes using retrofit2
+     */
     private void fetchRecipes(){
         mProgressBar.setVisibility(View.VISIBLE);
         mRecipeProvider.retrieveRecipeList(mIdlingResource);
@@ -109,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Implemented from recipe provider as callback for receiving recipes
+     * @param recipes
+     */
     @Override
     public void onDone(List<Recipe> recipes) {
 
@@ -122,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
         Log.i("ON_CREATE", "Number of recipes: " + mRecipes.size());
     }
 
+    /**
+     * Implemented from recipe provider as callback when recipe fetch fails
+     * @param error code
+     */
     @Override
     public void onFail(String error){
 

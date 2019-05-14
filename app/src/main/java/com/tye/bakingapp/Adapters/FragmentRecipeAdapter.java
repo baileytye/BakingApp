@@ -124,6 +124,9 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
         }
     }
 
+    /**
+     * Class to hold ingredient list item in recycler view
+     */
     protected class IngredientsViewHolder extends ViewHolder{
 
         @BindView(R.id.tv_item_ingredients) TextView itemIngridientsTextView;

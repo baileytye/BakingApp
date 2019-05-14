@@ -33,6 +33,7 @@ public class StepsActivity extends AppCompatActivity {
         if(savedInstanceState == null) {
             if (intent != null) {
                 if (intent.hasExtra(EXTRA_RECIPE) && intent.hasExtra(Intent.EXTRA_INDEX)) {
+
                     Recipe recipe = intent.getParcelableExtra(EXTRA_RECIPE);
                     int stepNumber = intent.getIntExtra(Intent.EXTRA_INDEX, 0);
                     StepDetailsFragment fragment = StepDetailsFragment.newInstance(stepNumber, recipe);

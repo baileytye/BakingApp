@@ -127,8 +127,10 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
         ButterKnife.bind(this, rootView);
 
+        //If is a phone
         if(!isTablet) {
             int orientation = getResources().getConfiguration().orientation;
+
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (mStepInstructionTextView != null) {
                     mStepInstructionTextView.setText(mStep.getDescription());
@@ -155,9 +157,10 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
                 displayVideoOrImageIfPresent();
             }
-            //Tablet case for portrait and landscape
+        //Tablet case for portrait and landscape
         } else {
             if (mStepInstructionTextView != null) {
                 mStepInstructionTextView.setText(mStep.getDescription());
@@ -181,6 +184,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         outState.putBoolean(EXTRA_PLAY_WHEN_READY, playWhenReady);
     }
 
+    /**
+     * Initialize exoplayer
+     */
     private void initializePlayer() {
 
         TrackSelector trackSelector = new DefaultTrackSelector();
@@ -190,6 +196,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         simpleExoPlayer.addListener(this);
     }
 
+    /**
+     * Prepare video from url
+     */
     private void prepareVideo(){
 
         if(!displayVideoOrImageIfPresent()) return;
@@ -208,7 +217,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     }
 
     /**
-     * Displays the corrent views given what is required from Step
+     * Displays the current views given what is required from Step
      * @return returns true if video is present
      */
     private boolean displayVideoOrImageIfPresent(){
@@ -234,6 +243,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         return videoPresent;
     }
 
+    /**
+     * Release the player and save states
+     */
     private void releasePlayer(){
 
         currentPosition = simpleExoPlayer.getCurrentPosition();
@@ -243,6 +255,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         simpleExoPlayer = null;
     }
 
+    /**
+     * Updates UI with new step values
+     */
     private void updateStepUI(){
 
         simpleExoPlayer.stop();
@@ -253,6 +268,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         displayButtons();
     }
 
+    /**
+     * Displays next/previous step buttons
+     */
     private void displayButtons(){
         if(mStepNumber == mRecipe.getSteps().size() - 1){
             mNextStepButton.setVisibility(View.INVISIBLE);

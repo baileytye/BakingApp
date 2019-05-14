@@ -20,6 +20,7 @@ public class DetailsActivity extends AppCompatActivity implements RecipeFragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
@@ -42,11 +43,14 @@ public class DetailsActivity extends AppCompatActivity implements RecipeFragment
 
     @Override
     public void onStepClickFromFragment(int stepNumber, Recipe recipe) {
+
         if(findViewById(R.id.details_steps_container) == null) {
             Log.i("DetailsActivity", "Phone detected");
+
             Intent intent = new Intent(this, StepsActivity.class);
             intent.putExtra(EXTRA_RECIPE, recipe);
             intent.putExtra(Intent.EXTRA_INDEX, stepNumber);
+
             startActivity(intent);
         } else {
             Log.i("DetailsActivity", "Tablet detected");

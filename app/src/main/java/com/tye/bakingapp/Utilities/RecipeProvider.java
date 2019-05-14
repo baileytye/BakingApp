@@ -28,6 +28,10 @@ public class RecipeProvider {
         callback = c;
     }
 
+    /**
+     * Retrieves recipe list from server
+     * @param idlingResource
+     */
     public void retrieveRecipeList(@Nullable final SimpleIdlingResource idlingResource){
 
         if (idlingResource != null) {

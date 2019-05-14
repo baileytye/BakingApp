@@ -48,6 +48,7 @@ public class MyTestSuite {
         });
     }
 
+    //Test content is being displayed correctly
     @Test
     public void checkContentMatch() {
 

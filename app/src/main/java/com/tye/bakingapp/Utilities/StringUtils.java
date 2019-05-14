@@ -7,7 +7,11 @@ import java.util.List;
 
 public class StringUtils {
 
-
+    /**
+     * Combines ingredients into one string to display
+     * @param ingredients ingredients
+     * @return combined ingredients
+     */
     public static String combineIngredients(List<Ingredient> ingredients){
 
         StringBuilder s = new StringBuilder(150);
@@ -28,6 +32,11 @@ public class StringUtils {
         return s.toString();
     }
 
+    /**
+     * Makes the measurements more readable
+     * @param in measurement to change
+     * @return adjusted measurement
+     */
     private static String cleanMeasure(String in){
         String out;
         switch(in){
