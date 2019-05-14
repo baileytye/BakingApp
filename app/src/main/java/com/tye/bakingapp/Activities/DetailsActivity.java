@@ -18,6 +18,10 @@ import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
 
 public class DetailsActivity extends AppCompatActivity implements RecipeFragment.OnStepClickRecipeFragmentListener {
 
+    private static final String EXTRA_NAME = "extra_name";
+
+    private String mRecipeName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -37,6 +41,12 @@ public class DetailsActivity extends AppCompatActivity implements RecipeFragment
                 RecipeFragment mRecipeFragment = RecipeFragment.newInstance(recipe);
                getSupportFragmentManager().beginTransaction().add(R.id.details_recipe_container, mRecipeFragment).commit();
                ab.setTitle(recipe.getName());
+                mRecipeName = recipe.getName();
+            }
+        } else {
+            if(savedInstanceState.containsKey(EXTRA_NAME)){
+                mRecipeName = savedInstanceState.getString(EXTRA_NAME);
+                ab.setTitle(mRecipeName);
             }
         }
     }
@@ -57,6 +67,12 @@ public class DetailsActivity extends AppCompatActivity implements RecipeFragment
             StepDetailsFragment mStepDetailsFragment = StepDetailsFragment.newInstance(stepNumber, recipe);
             getSupportFragmentManager().beginTransaction().replace(R.id.details_steps_container, mStepDetailsFragment).commit();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_NAME, mRecipeName);
     }
 
 }

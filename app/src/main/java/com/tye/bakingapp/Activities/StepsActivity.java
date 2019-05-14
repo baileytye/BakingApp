@@ -14,9 +14,9 @@ import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
 
 public class StepsActivity extends AppCompatActivity {
 
-    private String mRecipeName;
     private static final String EXTRA_NAME = "extra_name";
 
+    private String mRecipeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
