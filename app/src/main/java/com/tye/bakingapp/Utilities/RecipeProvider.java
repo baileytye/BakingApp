@@ -30,7 +30,7 @@ public class RecipeProvider {
 
     /**
      * Retrieves recipe list from server
-     * @param idlingResource
+     * @param idlingResource for testing
      */
     public void retrieveRecipeList(@Nullable final SimpleIdlingResource idlingResource){
 

@@ -131,7 +131,7 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
 
     /**
      * Implemented from recipe provider as callback for receiving recipes
-     * @param recipes
+     * @param recipes recipes
      */
     @Override
     public void onDone(List<Recipe> recipes) {

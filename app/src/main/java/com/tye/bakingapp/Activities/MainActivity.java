@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MainRecipeListAda
 
     /**
      * Implemented from recipe provider as callback for receiving recipes
-     * @param recipes
+     * @param recipes recipes
      */
     @Override
     public void onDone(List<Recipe> recipes) {
