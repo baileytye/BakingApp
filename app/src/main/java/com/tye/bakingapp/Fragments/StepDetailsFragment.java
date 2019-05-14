@@ -70,7 +70,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @Nullable
     @BindView(R.id.b_previous_step) Button mPreviousStepButton;
     @Nullable
-    @BindView(R.id.tv_item_recipe) TextView mNoVideoTextView;
+    @BindView(R.id.tv_no_video) TextView mNoVideoTextView;
     @Nullable
     @BindView(R.id.iv_step_image) ImageView mStepImageView;
 
@@ -215,13 +215,14 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     private boolean displayVideoOrImageIfPresent(){
 
         boolean videoPresent = true;
+
         if(mStep.getVideoURL().equals("")) {
             playerView.setVisibility(View.GONE);
             if (mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.VISIBLE);
             videoPresent = false;
         } else {
             playerView.setVisibility(View.VISIBLE);
-            if(mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.INVISIBLE);
+            if(mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.GONE);
         }
         if(mStep.getThumbnailURL().equals("")){
             if(mStepImageView != null) mStepImageView.setVisibility(View.INVISIBLE);
