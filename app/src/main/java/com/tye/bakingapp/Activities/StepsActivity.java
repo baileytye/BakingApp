@@ -15,6 +15,9 @@ import static com.tye.bakingapp.Fragments.RecipeFragment.EXTRA_RECIPE;
 
 public class StepsActivity extends AppCompatActivity {
 
+    private String mRecipeName;
+    private static final String EXTRA_NAME = "extra_name";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,13 @@ public class StepsActivity extends AppCompatActivity {
                     StepDetailsFragment fragment = StepDetailsFragment.newInstance(stepNumber, recipe);
                     getSupportFragmentManager().beginTransaction().replace(R.id.activity_steps_container, fragment).commit();
                     ab.setTitle(recipe.getName());
+                    mRecipeName = recipe.getName();
                 }
+            }
+        } else {
+            if(savedInstanceState.containsKey(EXTRA_NAME)){
+                mRecipeName = savedInstanceState.getString(EXTRA_NAME);
+                ab.setTitle(mRecipeName);
             }
         }
     }
@@ -45,6 +54,7 @@ public class StepsActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_NAME, mRecipeName);
     }
 
 }

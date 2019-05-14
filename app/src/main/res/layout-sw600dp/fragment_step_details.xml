@@ -21,7 +21,15 @@
                 android:id="@+id/exo_player_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:resize_mode="fixed_width" />
+                app:resize_mode="fixed_width" >
+
+            </com.google.android.exoplayer2.ui.PlayerView>
+
+            <ImageView
+                android:id="@+id/iv_step_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/tv_step_instruction"

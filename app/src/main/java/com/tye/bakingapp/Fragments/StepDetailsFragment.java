@@ -1,7 +1,6 @@
 package com.tye.bakingapp.Fragments;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -9,14 +8,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -24,23 +22,19 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.Models.Step;
 import com.tye.bakingapp.R;
 
-import java.util.Objects;
-
-import butterknife.BindAnim;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -77,6 +71,8 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @BindView(R.id.b_previous_step) Button mPreviousStepButton;
     @Nullable
     @BindView(R.id.tv_item_recipe) TextView mNoVideoTextView;
+    @Nullable
+    @BindView(R.id.iv_step_image) ImageView mStepImageView;
 
     public StepDetailsFragment() {
         // Required empty public constructor
@@ -160,7 +156,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-                displayVideoIfPresent();
+                displayVideoOrImageIfPresent();
             }
             //Tablet case for portrait and landscape
         } else {
@@ -197,7 +193,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     private void prepareVideo(){
 
-        if(!displayVideoIfPresent()) return;
+        if(!displayVideoOrImageIfPresent()) return;
 
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory( getContext(),
                 Util.getUserAgent(getContext(), "BakingApp"));
@@ -212,16 +208,30 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     }
 
-    private boolean displayVideoIfPresent(){
-        if(mStep.getVideoURL().equals("")){
+    /**
+     * Displays the corrent views given what is required from Step
+     * @return returns true if video is present
+     */
+    private boolean displayVideoOrImageIfPresent(){
+
+        boolean videoPresent = true;
+        if(mStep.getVideoURL().equals("")) {
             playerView.setVisibility(View.GONE);
-            if(mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.VISIBLE);
-            return false;
+            if (mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.VISIBLE);
+            videoPresent = false;
         } else {
-            if(mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.INVISIBLE);
             playerView.setVisibility(View.VISIBLE);
-            return true;
+            if(mNoVideoTextView != null) mNoVideoTextView.setVisibility(View.INVISIBLE);
         }
+        if(mStep.getThumbnailURL().equals("")){
+            if(mStepImageView != null) mStepImageView.setVisibility(View.INVISIBLE);
+            return true;
+        } else {
+            if(mStepImageView != null) mStepImageView.setVisibility(View.VISIBLE);
+            Picasso.get().load(mStep.getThumbnailURL()).into(mStepImageView);
+        }
+
+        return videoPresent;
     }
 
     private void showError(){

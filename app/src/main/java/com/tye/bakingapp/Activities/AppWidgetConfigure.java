@@ -1,8 +1,12 @@
 package com.tye.bakingapp.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.IdlingResource;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -16,6 +20,7 @@ import com.tye.bakingapp.Adapters.MainRecipeListAdapter;
 import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.R;
 import com.tye.bakingapp.Utilities.RecipeProvider;
+import com.tye.bakingapp.Utilities.SimpleIdlingResource;
 import com.tye.bakingapp.Utilities.StringUtils;
 import com.tye.bakingapp.Widget.IngredientListWidget;
 
@@ -39,6 +44,10 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
     private List<Recipe> mRecipes;
     private RecipeProvider mRecipeProvider;
 
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +64,7 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
         mRecipeAdapter = new MainRecipeListAdapter(this, this);
 
         mRecipeProvider = new RecipeProvider(this);
-        mRecipeProvider.retrieveRecipeList();
+        mRecipeProvider.retrieveRecipeList(mIdlingResource);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -121,6 +130,18 @@ public class AppWidgetConfigure extends AppCompatActivity implements MainRecipeL
         mRecipeAdapter.setRecipes(mRecipes);
         mRecipeAdapter.notifyDataSetChanged();
         Log.i("ON_CREATE", "Number of recipes: " + mRecipes.size());
+    }
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
     }
 
 }

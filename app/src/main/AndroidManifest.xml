@@ -39,7 +39,8 @@
             android:parentActivityName=".Activities.MainActivity" />
 
         <activity android:name=".Activities.MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:label="@string/main_label">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

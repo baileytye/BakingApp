@@ -25,6 +25,12 @@
 
             </com.google.android.exoplayer2.ui.PlayerView>
 
+            <ImageView
+                android:id="@+id/iv_step_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:srcCompat="@tools:sample/avatars" />
+
             <TextView
                 android:id="@+id/tv_error"
                 android:layout_width="wrap_content"
@@ -38,7 +44,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:text="@string/hello_blank_fragment"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="18sp" />
 

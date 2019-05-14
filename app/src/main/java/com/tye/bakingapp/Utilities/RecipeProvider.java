@@ -3,6 +3,8 @@ package com.tye.bakingapp.Utilities;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.tye.bakingapp.Models.Recipe;
 
 import java.util.List;
@@ -25,7 +27,11 @@ public class RecipeProvider {
         callback = c;
     }
 
-    public void retrieveRecipeList(){
+    public void retrieveRecipeList(@Nullable final SimpleIdlingResource idlingResource){
+
+        if (idlingResource != null) {
+            idlingResource.setIdleState(false);
+        }
 
         Log.i("Receive Recipes", "Retrieving recipes...");
 
@@ -45,6 +51,9 @@ public class RecipeProvider {
 
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                if (idlingResource != null) {
+                    idlingResource.setIdleState(true);
+                }
                 if(!response.isSuccessful()){
 
                     Log.e("HTTP Request Error", String.valueOf(response.code()));
@@ -59,6 +68,10 @@ public class RecipeProvider {
 
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                if (idlingResource != null) {
+                    idlingResource.setIdleState(true);
+                }
+
                 Log.e("Retrofit Call Error", t.getMessage());
             }
         });

@@ -7,8 +7,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.R;
 import com.tye.bakingapp.Utilities.StringUtils;
@@ -29,7 +31,6 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
     Recipe mRecipe;
     private boolean mIsTablet;
     private int mSelectedPosition;
-
 
     public interface OnStepClickedAdapterListener {
         void onStepClickedFromAdapter(int stepNumber, Recipe recipe);
@@ -89,7 +90,6 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
         }
         public abstract void bindData(int position);
-
     }
 
     public class StepsViewHolder extends ViewHolder{
@@ -106,13 +106,11 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
                 @Override
                 public void onClick(View view) {
 
-                    //TODO: save instance state for rotation
                     if(mIsTablet) {
                         notifyItemChanged(mSelectedPosition);
                         mSelectedPosition = getLayoutPosition();
                         notifyItemChanged(mSelectedPosition);
                     }
-
 
                     mOnStepClickedAdapterListener.onStepClickedFromAdapter(
                             getAdapterPosition() - 1, mRecipe);
@@ -135,6 +133,7 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
 
         @BindView(R.id.tv_item_ingredients) TextView itemIngridientsTextView;
         @BindView(R.id.tv_item_servings) TextView itemServingsTextView;
+        @BindView(R.id.iv_recipe_image) ImageView recipeImageView;
 
         public IngredientsViewHolder(View view) {
             super(view);
@@ -146,6 +145,14 @@ public class FragmentRecipeAdapter extends RecyclerView.Adapter<FragmentRecipeAd
         public void bindData(int position) {
             itemIngridientsTextView.setText(StringUtils.combineIngredients(mRecipe.getIngredients()));
             itemServingsTextView.setText(String.valueOf(mRecipe.getServings()));
+
+            if(mRecipe.getImage().equals("")){
+                recipeImageView.setVisibility(View.GONE);
+            } else {
+                //Could be loading view until ready, but not enough time
+                Picasso.get().load(mRecipe.getImage()).into(recipeImageView);
+                recipeImageView.setVisibility(View.VISIBLE);
+            }
         }
     }
 

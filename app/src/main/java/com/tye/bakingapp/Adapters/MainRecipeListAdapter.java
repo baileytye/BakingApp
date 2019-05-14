@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
 import com.tye.bakingapp.Models.Recipe;
 import com.tye.bakingapp.R;
 
@@ -91,6 +92,10 @@ public class MainRecipeListAdapter extends RecyclerView.Adapter<MainRecipeListAd
             mItemNameTextView.setText(recipe.getName());
             if(recipe.getImage().equals("")){
                 mItemImageView.setVisibility(View.GONE);
+            } else {
+                //Could add loading view until ready but not enough time
+                Picasso.get().load(recipe.getImage()).into(mItemImageView);
+                mItemImageView.setVisibility(View.VISIBLE);
             }
 
         }

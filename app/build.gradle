@@ -9,17 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        // Specifies the application ID for the test APK.
-        testApplicationId "com.tye.test.bakingapp"
-        // Specifies the fully-qualified class name of the test instrumentation runner.
-        testInstrumentationRunner "android.test.InstrumentationTestRunner"
-        // If set to 'true', enables the instrumentation class to start and stop profiling.
-        // If set to false (default), profiling occurs the entire time the instrumentation
-        // class is running.
-        testHandleProfiling false
-        // If set to 'true', indicates that the Android system should run the instrumentation
-        // class as a functional test. The default value is 'false'
-        testFunctionalTest false
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -41,14 +31,18 @@ dependencies {
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    // Required for local unit tests (JUnit 4 framework)
-    testImplementation 'junit:junit:4.12'
-
-    // Required for instrumented tests
-    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
-    androidTestImplementation 'com.android.support.test:runner:1.02'
+// Testing-only dependencies
+    androidTestImplementation 'androidx.test:core:' + rootProject.coreVersion
+    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
+    androidTestImplementation 'androidx.test:runner:' + rootProject.runnerVersion
+    androidTestImplementation 'androidx.test.espresso:espresso-core:' + rootProject.espressoVersion
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
+    // Note that espresso-idling-resource is used in the code under test.
+    implementation 'androidx.test.espresso:espresso-idling-resource:' + rootProject.espressoVersion
 
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
