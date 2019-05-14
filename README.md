@@ -4,6 +4,6 @@ This is an educational app for the Android Nanodegree which displays movies fetc
 
 APIs Used:  
 Retrofit2.  
-Picaso. 
-Butterknife.
+Picaso.   
+Butterknife.  
 
